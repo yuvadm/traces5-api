@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask
 from flask.ext import restful
 from flask.ext.restful import reqparse
@@ -36,10 +38,10 @@ class Traces(restful.Resource):
     @crossdomain(origin='*')
     def get(self):
         traces = Trace.query.order_by(Trace.id.desc()).limit(3)
-        return [{
+        return json.dumps([{
             'page': trace.page,
-            'trace': trace.trace
-        } for trace in traces]
+            'trace': json.loads(trace.trace)
+        } for trace in traces])
 
     @crossdomain(origin='*')
     def post(self):
