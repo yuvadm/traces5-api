@@ -5,6 +5,8 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 from os import environ
 
+from cors import crossdomain
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL', 'postgres://localhost:5432/traces')
 
@@ -31,6 +33,7 @@ class Trace(db.Model):
 
 
 class Traces(restful.Resource):
+    @crossdomain(origin='*')
     def get(self):
         traces = Trace.query.order_by(Trace.id.desc()).limit(3)
         return [{
@@ -38,6 +41,7 @@ class Traces(restful.Resource):
             'trace': trace.trace
         } for trace in traces]
 
+    @crossdomain(origin='*')
     def post(self):
         args = trace_parser.parse_args()
         trace = Trace(args['page'], args['trace'])
