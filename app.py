@@ -26,8 +26,11 @@ class Trace(db.Model):
 
 class HelloWorld(restful.Resource):
     def get(self):
-        traces = Trace.query.all()
-        return traces[0].trace
+        traces = Trace.query.order_by(Trace.id.desc()).limit(3)
+        return [{
+            'page': trace.page,
+            'trace': trace.trace
+        } for trace in traces]
 
 api.add_resource(HelloWorld, '/')
 
