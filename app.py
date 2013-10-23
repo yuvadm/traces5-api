@@ -24,7 +24,7 @@ class Trace(db.Model):
         return '{} {}'.format(self.id, self.page)
 
 
-class HelloWorld(restful.Resource):
+class Traces(restful.Resource):
     def get(self):
         traces = Trace.query.order_by(Trace.id.desc()).limit(3)
         return [{
@@ -32,7 +32,7 @@ class HelloWorld(restful.Resource):
             'trace': trace.trace
         } for trace in traces]
 
-api.add_resource(HelloWorld, '/')
+api.add_resource(Traces, '/traces')
 
 if __name__ == '__main__':
     app.run(debug=True)
