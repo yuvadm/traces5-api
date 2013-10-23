@@ -1,5 +1,6 @@
 from flask import Flask
 from flask.ext import restful
+from flask.ext.restful import reqparse
 from flask.ext.sqlalchemy import SQLAlchemy
 
 from os import environ
@@ -9,6 +10,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL', 'postgres://
 
 db = SQLAlchemy(app)
 api = restful.Api(app)
+
+
+trace_parser = reqparse.RequestParser()
+trace_parser.add_argument('page', type=str)
+trace_parser.add_argument('trace', type=str)
 
 
 class Trace(db.Model):
@@ -31,6 +37,13 @@ class Traces(restful.Resource):
             'page': trace.page,
             'trace': trace.trace
         } for trace in traces]
+
+    def post(self):
+        args = trace_parser.parse_args()
+        trace = Trace(args['page'], args['trace'])
+        db.session.add(trace)
+        db.session.commit()
+        return 'ok', 201
 
 api.add_resource(Traces, '/traces')
 
