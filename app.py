@@ -12,4 +12,4 @@ class HelloWorld(restful.Resource):
 api.add_resource(HelloWorld, '/')
 
 if __name__ == '__main__':
-    app.run(port=int(environ.get('PORT', 5000)))
+    app.run(debug=True)
