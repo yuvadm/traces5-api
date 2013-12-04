@@ -38,9 +38,10 @@ class Traces(restful.Resource):
     @crossdomain(origin='*')
     def get(self):
         args = trace_parser.parse_args()
-        traces = Trace.query.order_by(Trace.id.desc()).limit(3)
+        traces = Trace.query
         if 'page' in request.args:
-            traces = traces.from_self().filter_by(page=request.args['page'])
+            traces = traces.filter_by(page=request.args['page'])
+        traces = traces.order_by(Trace.id.desc()).limit(3)
         return json.dumps([{
             'page': trace.page,
             'trace': json.loads(trace.trace)
