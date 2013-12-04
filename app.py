@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask
+from flask import Flask, request
 from flask.ext import restful
 from flask.ext.restful import reqparse
 from flask.ext.sqlalchemy import SQLAlchemy
@@ -37,7 +37,10 @@ class Trace(db.Model):
 class Traces(restful.Resource):
     @crossdomain(origin='*')
     def get(self):
+        args = trace_parser.parse_args()
         traces = Trace.query.order_by(Trace.id.desc()).limit(3)
+        if 'page' in request.args:
+            traces = traces.from_self().filter_by(page=request.args['page'])
         return json.dumps([{
             'page': trace.page,
             'trace': json.loads(trace.trace)
