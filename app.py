@@ -41,7 +41,7 @@ class Traces(restful.Resource):
         traces = Trace.query
         if 'page' in request.args:
             traces = traces.filter_by(page=request.args['page'])
-        traces = traces.order_by(Trace.id.desc()).limit(3)
+        traces = traces.order_by(Trace.id.desc()).limit(int(request.args.get('limit', '3')))
         return json.dumps([{
             'page': trace.page,
             'trace': json.loads(trace.trace)
